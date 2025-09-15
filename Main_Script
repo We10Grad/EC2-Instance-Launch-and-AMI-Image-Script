@@ -1,0 +1,10 @@
+#!/bin/bash
+# A script to insert into the user data field of an AWS EC2 instance running on Ubuntu to launch and configure an apache webserver
+
+# Initial update and installing apache
+sudo apt update
+sudo apt install -y apache2 
+
+# Starting and enabling apache
+systemctl start apache2
+systemctl enable apache2
