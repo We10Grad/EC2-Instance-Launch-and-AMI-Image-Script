@@ -1,1 +1,1 @@
-aws ec2 run-instances --image-id -ami-0360c520857e3138f --count 1 --instance-type t2.micro --key-name Level-Up-Key --security-group-ids launch-wizard-1
+aws ec2 run-instances --image-id ami-0360c520857e3138f --count 1 --instance-type t2.micro --key-name Level-Up-Key --security-group-ids sg-048b5eaf777063444
