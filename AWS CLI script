@@ -6,4 +6,4 @@
   --security-group-ids sg-048b5eaf777063444 \
   -- user-data file: #!/bin/bash
 # Download and execute script from GitHub
-curl -fsSL https://raw.githubusercontent.com/WE10GRAD/EC2-Instance-Launch-and-AMI-Image-Script/Main-script/script.sh | bash
+curl -fsSL https://raw.githubusercontent.com/WE10GRAD/EC2-Instance-Launch-and-AMI-Image-Script/Main_Script/script.sh | bash
