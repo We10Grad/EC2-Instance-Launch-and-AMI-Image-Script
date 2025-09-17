@@ -1,19 +1,13 @@
 #!/bin/bash
 # A script to insert into the user data field of an AWS EC2 instance running on Ubuntu to launch and configure an apache webserver
 
-# Auto-detect OS and install Apache accordingly
-if [ -f /etc/redhat-release ]; then
-    # Amazon Linux/CentOS/RHEL
-    sudo yum update -y
-    sudo yum install -y httpd
-    sudo systemctl start httpd
-    sudo systemctl enable httpd
-    echo "<h1>Apache on Amazon Linux!</h1>" > /var/www/html/index.html
-elif [ -f /etc/debian_version ]; then
-    # Ubuntu/Debian
-    sudo apt update -y
-    sudo apt install -y apache2
-    sudo systemctl start apache2
-    sudo systemctl enable apache2
-    echo "<h1>Apache on Ubuntu!</h1>" > /var/www/html/index.html
-fi
+# Initial update and installing apache
+sudo apt update -y
+sudo apt install -y apache2 
+
+# Starting and enabling apache
+sudo systemctl start apache2
+sudo systemctl enable apache2
+
+# Create a simple index page
+echo "<h1>Apache Web Server Running on Ubuntu!</h1>" | sudo tee /var/www/html/index.html
