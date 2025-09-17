@@ -1,9 +1,10 @@
- aws ec2 run-instances\
+# Script to paste into AWS CLI to launch EC2 instance and populate with user data from another branch of this repo
+aws ec2 run-instances\
   --image-id ami-0360c520857e3138f \
   --count 1 \
   --instance-type t2.micro \
   --key-name Level-Up-Key \
   --security-group-ids sg-048b5eaf777063444 \
-  -- user-data file: #!/bin/bash
+  --user-data file: #!/bin/bash
 # Download and execute script from GitHub
 curl -fsSL https://raw.githubusercontent.com/WE10GRAD/EC2-Instance-Launch-and-AMI-Image-Script/Main_Script/script.sh | bash
