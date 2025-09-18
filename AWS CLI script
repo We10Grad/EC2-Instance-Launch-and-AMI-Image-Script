@@ -7,5 +7,12 @@ aws ec2 run-instances \
   --security-group-ids sg-048b5eaf777063444 \
   --associate-public-ip-address \
   --user-data '#!/bin/bash
+
 # Download and execute script from GitHub
 curl -fsSL https://raw.githubusercontent.com/WE10GRAD/EC2-Instance-Launch-and-AMI-Image-Script/main/Main_Script | bash'
+
+# Capture instance id 
+--query 'Instances[0].InstanceId' --output text
+
+# Script pauses here until instance is ready
+aws ec2 wait instance-running --instance-ids $INSTANCE_ID
