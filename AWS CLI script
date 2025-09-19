@@ -1,3 +1,7 @@
+# Create a new file called ec2-automation.sh
+cat > ec2-automation.sh << 'EOF'
+#!/bin/bash
+
 # Script to paste into AWS CLI to launch EC2 instance and populate with user data from another branch of this repo
 
 # Creating original EC2 instance 
@@ -44,3 +48,4 @@ AMI_LAUNCH=$(aws ec2 run-instances \
 
 # Display AMI copy 
 echo "New instance created: $AMI_LAUNCH"
+EOF
