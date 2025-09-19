@@ -1,10 +1,10 @@
-# Create a new file called ec2-automation.sh
 cat > ec2-automation.sh << 'EOF' && chmod +x ec2-automation.sh && ./ec2-automation.sh
 #!/bin/bash
 
-# Script to paste into AWS CLI to launch EC2 instance and populate with user data from another branch of this repo
+# Script to launch EC2 instance, create AMI, and launch from AMI
+echo "Starting EC2 automation script"
 
-# Creating original EC2 instance 
+# Creating original EC2 instance
 INSTANCE_ID=$(aws ec2 run-instances \
   --image-id ami-0360c520857e3138f \
   --count 1 \
@@ -14,28 +14,27 @@ INSTANCE_ID=$(aws ec2 run-instances \
   --associate-public-ip-address \
   --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=Apache-Server}]' \
   --user-data '#!/bin/bash
-
-# Download and execute script from GitHub
 curl -fsSL https://raw.githubusercontent.com/WE10GRAD/EC2-Instance-Launch-and-AMI-Image-Script/main/Main_Script | bash' \
-
   --query 'Instances[0].InstanceId' --output text)
 
-#Display instance ID to prove creation
-echo "Instance created: $INSTANCE_ID"
+echo "Created instance: $INSTANCE_ID"
 
-# Creating pause until instance is ready
+# Wait for instance to be ready
 aws ec2 wait instance-running --instance-ids $INSTANCE_ID
 
-# Creating image of original EC2 and naming it "Apache-AMI", saving that info as a variable
+# Create AMI from the instance
+echo "Creating AMI"
 AMI_ID=$(aws ec2 create-image \
   --instance-id $INSTANCE_ID \
   --name "Apache-AMI" \
   --query 'ImageId' --output text)
 
-# Creating pause while image snapshot is completed
+# Wait for AMI to be ready
 aws ec2 wait image-available --image-ids $AMI_ID
 
-# Launch new instance using custom AMI
+
+# Launch new instance from custom AMI
+echo "Launching new instance from AMI"
 AMI_LAUNCH=$(aws ec2 run-instances \
   --image-id $AMI_ID \
   --count 1 \
@@ -46,6 +45,5 @@ AMI_LAUNCH=$(aws ec2 run-instances \
   --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=AMI-Copy-Server}]' \
   --query 'Instances[0].InstanceId' --output text)
 
-# Display AMI copy 
 echo "New instance created: $AMI_LAUNCH"
 EOF
