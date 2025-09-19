@@ -1,18 +1,46 @@
 # Script to paste into AWS CLI to launch EC2 instance and populate with user data from another branch of this repo
-aws ec2 run-instances \
+
+# Creating original EC2 instance 
+INSTANCE_ID=$(aws ec2 run-instances \
   --image-id ami-0360c520857e3138f \
   --count 1 \
   --instance-type t2.micro \
   --key-name Level-Up-Key \
   --security-group-ids sg-048b5eaf777063444 \
   --associate-public-ip-address \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=Apache-Server}]' \
   --user-data '#!/bin/bash
 
 # Download and execute script from GitHub
-curl -fsSL https://raw.githubusercontent.com/WE10GRAD/EC2-Instance-Launch-and-AMI-Image-Script/main/Main_Script | bash'
+curl -fsSL https://raw.githubusercontent.com/WE10GRAD/EC2-Instance-Launch-and-AMI-Image-Script/main/Main_Script | bash' \
 
-# Capture instance id 
---query 'Instances[0].InstanceId' --output text
+  --query 'Instances[0].InstanceId' --output text)
 
-# Script pauses here until instance is ready
+#Display instance ID to prove creation
+echo "Instance created: $INSTANCE_ID"
+
+# Creating pause until instance is ready
 aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+
+# Creating image of original EC2 and naming it "Apache-AMI", saving that info as a variable
+AMI_ID=$(aws ec2 create-image \
+  --instance-id $INSTANCE_ID \
+  --name "Apache-AMI" \
+  --query 'ImageId' --output text)
+
+# Creating pause while image snapshot is completed
+aws ec2 wait image-available --image-ids $AMI_ID
+
+# Launch new instance using custom AMI
+AMI_LAUNCH=$(aws ec2 run-instances \
+  --image-id $AMI_ID \
+  --count 1 \
+  --instance-type t2.micro \
+  --key-name Level-Up-Key \
+  --security-group-ids sg-048b5eaf777063444 \
+  --associate-public-ip-address \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=AMI-Copy-Server}]' \
+  --query 'Instances[0].InstanceId' --output text)
+
+# Display AMI copy 
+echo "New instance created: $AMI_LAUNCH"
