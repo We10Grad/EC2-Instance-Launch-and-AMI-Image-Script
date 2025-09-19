@@ -1,5 +1,5 @@
 # Create a new file called ec2-automation.sh
-cat > ec2-automation.sh << 'EOF'
+cat > ec2-automation.sh << 'EOF' && chmod +x ec2-automation.sh && ./ec2-automation.sh
 #!/bin/bash
 
 # Script to paste into AWS CLI to launch EC2 instance and populate with user data from another branch of this repo
