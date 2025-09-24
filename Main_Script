@@ -6,7 +6,7 @@ sudo apt update -y
 sudo apt install -y apache2 
 
 # Create custom homepage message
-echo "<html><body><h1>It worked. Great job! Celebrate with some ice cream.<h1><body><html>" >/var/www/html/index.html
+echo "<html><body><h1>It worked. Great job! Celebrate with some ice cream.</h1><body><html>" >/var/www/html/index.html
 
 # Starting and enabling apache
 sudo systemctl start apache2
